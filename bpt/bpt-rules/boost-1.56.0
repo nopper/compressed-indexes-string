@@ -1,0 +1,30 @@
+#!/bin/bash
+
+BPT_APP_NAME=boost
+BPT_APP_VERSION=1.56.0
+
+bpt_download() {
+    true
+}
+
+bpt_unpack() {
+    true
+}
+
+bpt_build() {
+    ./bootstrap.sh --prefix="$BPT_PKG_PREFIX"
+    ./b2 -j$BPT_CPU_COUNT --layout=tagged variant=release link=shared threading=multi install
+    echo "export BOOST_ROOT=\"$BPT_PKG_PREFIX\"" >> "$BPT_PKG_PREFIX/bpt_meta/env_script"
+}
+
+bpt_unittest() {
+    true
+}
+
+bpt_clean() {
+   make clean
+}
+
+bpt_deepclean() {
+    true
+}

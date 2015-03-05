@@ -1,0 +1,26 @@
+diff --git a/src/CompPermIdx.hpp b/src/CompPermIdx.hpp
+index 2406b07..d3d4b4a 100644
+--- a/src/CompPermIdx.hpp
++++ b/src/CompPermIdx.hpp
+@@ -126,6 +126,12 @@ public:
+    */
+   uint64_t NumKeys() const { return NumKeys_; }
+ 
++  /**
++   * Promoting this private method up to avoid complications
++   */
++  uint64_t BackPermSearch(const std::vector<uint8_t>& query,
++                          uint64_t& first, uint64_t& last) const;
++
+ private:
+   HufWatTree WT_;
+   std::vector<uint64_t> C_;
+@@ -133,8 +139,6 @@ private:
+ 
+   uint64_t Jump2End(const uint64_t pos) const;
+   uint64_t BackStep(const uint64_t pos) const;
+-  uint64_t BackPermSearch(const std::vector<uint8_t>& query,
+-                          uint64_t& first, uint64_t& last) const;
+   void GetString(const uint64_t pos, std::string& ret) const;
+   void GetStringSet(const uint64_t first, const uint64_t last,
+                     std::vector<std::string>& ret) const;

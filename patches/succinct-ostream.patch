@@ -1,0 +1,60 @@
+diff --git a/mapper.hpp b/mapper.hpp
+index 381e199..68cd9eb 100644
+--- a/mapper.hpp
++++ b/mapper.hpp
+@@ -50,13 +50,13 @@ namespace succinct { namespace mapper {
+     namespace detail {
+         class freeze_visitor : boost::noncopyable {
+         public:
+-            freeze_visitor(std::ofstream& fout, uint64_t flags)
+-                : m_fout(fout)
++            freeze_visitor(std::ostream& out, uint64_t flags)
++                : m_out(out)
+                 , m_flags(flags)
+                 , m_written(0)
+             {
+                 // Save freezing flags
+-                m_fout.write(reinterpret_cast<const char*>(&m_flags), sizeof(m_flags));
++                m_out.write(reinterpret_cast<const char*>(&m_flags), sizeof(m_flags));
+                 m_written += sizeof(m_flags);
+             }
+ 
+@@ -70,7 +70,7 @@ namespace succinct { namespace mapper {
+             template <typename T>
+             typename boost::enable_if<boost::is_pod<T>, freeze_visitor&>::type
+             operator()(T& val, const char* /* friendly_name */) {
+-                m_fout.write(reinterpret_cast<const char*>(&val), sizeof(T));
++                m_out.write(reinterpret_cast<const char*>(&val), sizeof(T));
+                 m_written += sizeof(T);
+                 return *this;
+             }
+@@ -81,7 +81,7 @@ namespace succinct { namespace mapper {
+                 (*this)(vec.m_size, "size");
+ 
+                 size_t n_bytes = static_cast<size_t>(vec.m_size * sizeof(T));
+-                m_fout.write(reinterpret_cast<const char*>(vec.m_data), long(n_bytes));
++                m_out.write(reinterpret_cast<const char*>(vec.m_data), long(n_bytes));
+                 m_written += n_bytes;
+ 
+                 return *this;
+@@ -92,7 +92,7 @@ namespace succinct { namespace mapper {
+             }
+ 
+         protected:
+-            std::ofstream& m_fout;
++            std::ostream& m_out;
+             const uint64_t m_flags;
+             uint64_t m_written;
+         };
+@@ -232,9 +232,9 @@ namespace succinct { namespace mapper {
+     }
+ 
+     template <typename T>
+-    size_t freeze(T& val, std::ofstream& fout, uint64_t flags = 0, const char* friendly_name = "<TOP>")
++    size_t freeze(T& val, std::ostream& out, uint64_t flags = 0, const char* friendly_name = "<TOP>")
+     {
+-        detail::freeze_visitor freezer(fout, flags);
++        detail::freeze_visitor freezer(out, flags);
+         freezer(val, friendly_name);
+         return freezer.written();
+     }

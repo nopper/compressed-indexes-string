@@ -1,0 +1,34 @@
+#!/bin/bash
+
+BPT_APP_NAME=openssl
+BPT_APP_VERSION=1.0.1i
+
+bpt_download() {
+    true
+}
+
+bpt_unpack() {
+    true
+}
+
+bpt_build() {
+    ./Configure --prefix="$BPT_PKG_PREFIX" \
+        shared zlib enable-ec_nistp_64_gcc_128 \
+        linux-x86_64 \
+        "-Wa,--noexecstack ${CPPFLAGS} ${CFLAGS} ${LDFLAGS}"
+    make depend
+    make
+    make install
+}
+
+bpt_unittest() {
+    true
+}
+
+bpt_clean() {
+   make clean
+}
+
+bpt_deepclean() {
+    true
+}

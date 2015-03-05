@@ -1,0 +1,30 @@
+diff --git a/block_codecs.hpp b/block_codecs.hpp
+index 3645059..201c659 100644
+--- a/block_codecs.hpp
++++ b/block_codecs.hpp
+@@ -142,6 +142,7 @@ namespace quasi_succinct {
+             }
+         };
+ 
++        // This is declared static, but won't work in a multithreaded app
+         static codec_type optpfor_codec;
+         static TightVariableByte vbyte_codec;
+ 
+@@ -150,6 +151,8 @@ namespace quasi_succinct {
+         static void encode(uint32_t const* in, uint32_t /* sum_of_values */,
+                            size_t n, std::vector<uint8_t>& out)
+         {
++            codec_type optpfor_codec;
++
+             assert(n <= block_size);
+             // XXX this could be threadlocal static
+             std::vector<uint8_t> buf(2 * 4 * block_size);
+@@ -168,6 +171,8 @@ namespace quasi_succinct {
+         static uint8_t const* decode(uint8_t const* in, uint32_t* out,
+                                      uint32_t /* sum_of_values */, size_t n)
+         {
++            codec_type optpfor_codec;
++
+             assert(n <= block_size);
+             size_t out_len = block_size;
+             uint8_t const* ret;

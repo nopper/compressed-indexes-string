@@ -1,0 +1,30 @@
+#!/bin/bash
+
+BPT_APP_NAME=cmake
+BPT_APP_VERSION=3.0.2
+
+bpt_download() {
+    true
+}
+
+bpt_unpack() {
+    true
+}
+
+bpt_build() {
+    ./bootstrap --prefix="$BPT_PKG_PREFIX"
+    make
+    make install
+}
+
+bpt_unittest() {
+    true
+}
+
+bpt_clean() {
+   make clean
+}
+
+bpt_deepclean() {
+    true
+}

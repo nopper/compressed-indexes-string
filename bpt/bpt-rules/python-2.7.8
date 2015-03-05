@@ -1,0 +1,32 @@
+#!/bin/bash 
+
+BPT_APP_NAME=python2
+BPT_APP_VERSION=2.7.8
+
+bpt_download() {
+    true
+}
+
+bpt_unpack() {
+    true
+}
+
+bpt_build() {
+    sed -ie "/exts = \[\]/i \        add_dir_to_list(lib_dirs, '$MYLIBDIR')" setup.py
+    sed -ie "/exts = \[\]/i \        add_dir_to_list(inc_dirs, '$MYINCLUDEDIR')" setup.py
+    ./configure --prefix="$BPT_PKG_PREFIX" --enable-shared 
+    make -j$BPT_CPU_COUNT
+    make install
+}
+
+bpt_unittest() {
+    true
+}
+
+bpt_clean() {
+    true
+}
+
+bpt_deepclean() {
+    true
+}

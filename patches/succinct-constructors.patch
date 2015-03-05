@@ -1,0 +1,33 @@
+diff --git a/bit_vector.hpp b/bit_vector.hpp
+index 2f8bc4a..a274f38 100644
+--- a/bit_vector.hpp
++++ b/bit_vector.hpp
+@@ -192,6 +192,11 @@ namespace succinct {
+             : m_size(0)
+         {}
+ 
++        bit_vector(const uint64_t* data, uint64_t size_in_bits)
++            : m_size(size_in_bits)
++            , m_bits(data, size_in_bits / (8 * sizeof(uint64_t)))
++        {}
++
+         template <class Range>
+         bit_vector(Range const& from) {
+             std::vector<uint64_t> bits;
+diff --git a/mappable_vector.hpp b/mappable_vector.hpp
+index 0c1c9a7..35687b1 100644
+--- a/mappable_vector.hpp
++++ b/mappable_vector.hpp
+@@ -36,6 +36,12 @@ namespace succinct { namespace mapper {
+             , m_deleter()
+         {}
+ 
++        mappable_vector(const T* data, uint64_t size)
++            : m_data(data)
++            , m_size(size)
++            , m_deleter()
++        {}
++
+         template <typename Range>
+         mappable_vector(Range const& from)
+             : m_data(0)

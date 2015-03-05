@@ -1,0 +1,93 @@
+diff --git a/optimal_partition.hpp b/optimal_partition.hpp
+--- optimal_partition.hpp
++++ optimal_partition.hpp
+@@ -3,6 +3,7 @@
+ #include <vector>
+ #include <algorithm>
+ #include <iterator>
++#include <boost/predef.h>
+ #include "util.hpp"
+ 
+ namespace quasi_succinct {
+@@ -20,10 +21,10 @@ namespace quasi_succinct {
+             // a window reppresent the cost of the interval [start, end)
+ 
+             ForwardIterator start_it;
+-            ForwardIterator end_it;
++            ForwardIterator stop_it;
+             // starting and ending position of the window
+             posting_t start = 0;
+-            posting_t end = 0; // end-th position is not in the current window
++            posting_t stop = 0; // end-th position is not in the current window
+             posting_t min_p = 0; // element that preceed the first element of the window
+             posting_t max_p = 0;
+ 
+@@ -31,7 +32,7 @@ namespace quasi_succinct {
+ 
+             cost_window(ForwardIterator begin, cost_t cost_upper_bound)
+                 : start_it(begin)
+-                , end_it(begin)
++                , stop_it(begin)
+                 , min_p(*begin)
+                 , max_p(0)
+                 , cost_upper_bound(cost_upper_bound)
+@@ -44,7 +45,7 @@ namespace quasi_succinct {
+ 
+             uint64_t size() const
+             {
+-                return end - start;
++                return stop - start;
+             }
+ 
+             void advance_start()
+@@ -54,11 +55,11 @@ namespace quasi_succinct {
+                 ++start_it;
+             }
+ 
+-            void advance_end()
++            void advance_stop()
+             {
+-                max_p = *end_it;
+-                ++end;
+-                ++end_it;
++                max_p = *stop_it;
++                ++stop;
++                ++stop_it;
+             }
+ 
+         };
+@@ -86,25 +87,25 @@ namespace quasi_succinct {
+ 
+             std::vector<posting_t> path(size + 1, 0);
+             for (posting_t i = 0; i < size; i++) {
+-                size_t last_end = i + 1;
++                size_t last_stop = i + 1;
+                 for (auto& window: windows) {
+ 
+                     assert(window.start == i);
+-                    while (window.end < last_end) {
+-                        window.advance_end();
++                    while (window.stop < last_stop) {
++                        window.advance_stop();
+                     }
+ 
+                     cost_t window_cost;
+                     while (true) {
+                         window_cost = cost_fun(window.universe(), window.size());
+-                        if ((min_cost[i] + window_cost < min_cost[window.end])) {
+-                            min_cost[window.end] = min_cost[i] + window_cost;
+-                            path[window.end] = i;
++                        if ((min_cost[i] + window_cost < min_cost[window.stop])) {
++                            min_cost[window.stop] = min_cost[i] + window_cost;
++                            path[window.stop] = i;
+                         }
+-                        last_end = window.end;
+-                        if (window.end == size) break;
++                        last_stop = window.stop;
++                        if (window.stop == size) break;
+                         if (window_cost >= window.cost_upper_bound) break;
+-                        window.advance_end();
++                        window.advance_stop();
+                     }
+ 
+                     window.advance_start();

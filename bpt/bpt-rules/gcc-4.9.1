@@ -1,0 +1,37 @@
+#!/bin/bash
+
+BPT_APP_NAME=gcc
+BPT_APP_VERSION=4.9.1
+
+bpt_download() {
+    true
+}
+
+bpt_unpack() {
+    true
+}
+
+bpt_build() {
+    mkdir -p build
+    pushd build
+
+    ../configure --prefix="$BPT_PKG_PREFIX" --disable-multilib --disable-bootstrap --enable-languages=c,c++ --enable-shared
+    make -j$BPT_CPU_COUNT
+    make install
+    popd
+
+    echo "export LD_LIBRARY_PATH=\"$BPT_PKG_PREFIX/lib64\":\"\$LD_LIBRARY_PATH\"" > "$BPT_PKG_PREFIX/bpt_meta/env_script"
+    echo "export LD_LIBRARY_PATH=\"$BPT_PKG_PREFIX/libexec\":\"\$LD_LIBRARY_PATH\"" >> "$BPT_PKG_PREFIX/bpt_meta/env_script"
+}
+
+bpt_unittest() {
+    true
+}
+
+bpt_clean() {
+   make clean
+}
+
+bpt_deepclean() {
+    true
+}
